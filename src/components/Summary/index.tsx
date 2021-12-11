@@ -11,7 +11,7 @@ export function Summary() {
           <p>Entradas</p>
           <img src={incoming} alt='up-arrow' />
         </header>
-        <strong>1000</strong>
+        <strong>R$ 1000</strong>
       </div>
 
       <div>
@@ -19,15 +19,15 @@ export function Summary() {
           <p>Saidas</p>
           <img src={outcoming} alt='up-arrow' />
         </header>
-        <strong>- 500</strong>
+        <strong>- R$ 500</strong>
       </div>
 
-      <div>
+      <div className='highlight-background'>
         <header>
           <p>Total</p>
           <img src={total} alt='up-arrow' />
         </header>
-        <strong>500</strong>
+        <strong>R$ 500</strong>
       </div>
     </Container>
   )
