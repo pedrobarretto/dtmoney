@@ -4,7 +4,7 @@ import closeImg from '../../assets/close.svg';
 import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
 import React, { FormEvent, useState } from 'react';
-import { api } from '../../services/api';
+import { useTransactions } from '../../hooks/useTransactions';
 
 interface NewTrasactionModalProps {
   isOpen: boolean;
@@ -17,23 +17,26 @@ enum enType {
 }
 
 export function NewTrasactionModal({ onClose, isOpen }: NewTrasactionModalProps) {
+  const { createTransaction } = useTransactions();
+
   const [type, setType] = useState<enType>(enType.deposit);
   const [title, setTitle] = useState<string>('');
-  const [value, setValue] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(0);
   const [category, setCategory] = useState<string>('');
 
-  const handleCreateNetTransaction = (event: FormEvent) => {
+  const clearFields = () => {
+    setTitle('');
+    setTitle(enType.deposit);
+    setAmount(0);
+    setCategory('');
+  };
+
+  const handleCreateNewTransaction = async (event: FormEvent) => {
     event.preventDefault();
-
-    const payload = {
-      title,
-      value,
-      category,
-      type
-    };
-
-    api.post('/trasaction', payload);
-  }
+    await createTransaction({ amount, category, title, type }).then(x => console.log(x))
+    clearFields();
+    onClose();
+  };
 
   return (
     <Modal 
@@ -46,12 +49,12 @@ export function NewTrasactionModal({ onClose, isOpen }: NewTrasactionModalProps)
         <img src={closeImg} alt="Fechar Modal" />
       </button>
 
-      <Container onSubmit={handleCreateNetTransaction}>
+      <Container onSubmit={handleCreateNewTransaction}>
         <h2>Cadastrar Transação</h2>
 
         <input value={title} onChange={event => setTitle(event.target.value)} placeholder='Título' />
 
-        <input value={value} onChange={event => setValue(Number(event.target.value))} placeholder='Valor' type='number' />
+        <input value={amount} onChange={event => setAmount(Number(event.target.value))} placeholder='Valor' type='number' />
 
         <TransactionTypeContainer>
           <RadioBox 
@@ -77,7 +80,7 @@ export function NewTrasactionModal({ onClose, isOpen }: NewTrasactionModalProps)
 
         <input value={category} onChange={event => setCategory(event.target.value)} placeholder='Categoria' />
 
-        <button type="submit">Cadastrar</button>
+        <button onClick={handleCreateNewTransaction} type="submit">Cadastrar</button>
 
       </Container>
     </Modal>
